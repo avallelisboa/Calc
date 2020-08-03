@@ -10,11 +10,6 @@ import Calc from './components/Calc.vue'
 
 export default {
   name: 'App',
-  state: {
-    result: String,
-    numbers: Array,
-    operations: Array
-  },
   components: {
     Calc
   }

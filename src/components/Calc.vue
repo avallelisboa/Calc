@@ -33,6 +33,13 @@
 
 export default {
   name: 'Calc',
+  data: function(){
+    return{
+        result: '0',
+        numbers: [],
+        operations: []
+    }
+  },
   methods: {
       calculate: function(){
           if(this.operation == "sum"){
@@ -92,7 +99,7 @@ export default {
         this.operation = op;
         this.numbers.push(this.result);
 
-        this.result = '';
+        this.result = '0';
       },
       clear: function(){
           this.result = "";
