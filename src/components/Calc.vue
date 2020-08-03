@@ -33,12 +33,10 @@
 
 export default {
   name: 'Calc',
-  data: function(){
-    return{
-        result: '0',
-        numbers: [],
-        operations: []
-    }
+  props:{
+        result: String,
+        numbers: [Array, String],
+        operations: [Array, String]
   },
   methods: {
       calculate: function(){
@@ -48,7 +46,7 @@ export default {
                 var n = parseInt(e);
                 r += n;
             });
-            this.result = toString(r);
+            this.$emit('result', toString(r));
           }if(this.operation == "rest"){
               let l = this.numbers.length - 1;
               let r = 0;
@@ -64,7 +62,7 @@ export default {
                     r = r - n2; 
                 }
               }
-              this.result = toString(r);
+            this.$emit('result', toString(r));
           }
           if(this.operation == "multiplication"){
               let r = 1;
@@ -72,7 +70,7 @@ export default {
                 var n = parseInt(e);
                 r *= n;
             });
-            this.result = toString(r);
+            this.$emit('result', toString(r));
           }
           if(this.operation == "division"){
               let l = this.numbers.length - 1;
@@ -89,23 +87,26 @@ export default {
                     r = r / n2; 
                 }
               }
-              this.result = toString(r);
+            this.$emit('result', toString(r));
           }
           else{
-              this.result = '0';
+            this.$emit('result', '0');
           }
       },
       addOperation: function(op){
-        this.operation = op;
-        this.numbers.push(this.result);
-
-        this.result = '0';
+        this.$emit('operation', op);
+        let nums = this.numbers;
+        nums.push(this.result);
+        this.$emit('nums', nums);
+        this.$emit('result', '0');
       },
       clear: function(){
-          this.result = "";
+          this.$emit('result','0');
       },
       printNumber: function(number){
-          this.result += number;
+          let Result = this.result;
+          Result += number;
+          this.$emit('result', Result);
       },
   }
 }

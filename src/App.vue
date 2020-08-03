@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Calc></Calc>
+    <Calc :res="result" @result="this.result = res"></Calc>
   </div>
 </template>
 
@@ -10,6 +10,13 @@ import Calc from './components/Calc.vue'
 
 export default {
   name: 'App',
+  data(){
+    return{
+      result = '0',
+      number = [],
+      operations = []
+    }
+  },
   components: {
     Calc
   }
