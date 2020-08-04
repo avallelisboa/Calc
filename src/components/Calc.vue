@@ -6,13 +6,13 @@
             <span><i></i></span>
         </header>
         <div>
-            <input type="text" v-model="result">
+            <input id="inputResult" type="text" :placeholder="ph" v-model="result">
         </div>
         <div id="numbers">
-            <button v-on:click="addOperation('sum')">+</button>
-            <button v-on:click="addOperation('rest')">-</button>
-            <button v-on:click="addOperation('multiplication')">*</button>
-            <button v-on:click="addOperation('division')">/</button>
+            <button v-on:click="addOperation('sum')" :disabled="this.result == ''|| this.nums.length == 0">+</button>
+            <button v-on:click="addOperation('rest')" :disabled="this.result == ''|| this.nums.length == 0">-</button>
+            <button v-on:click="addOperation('multiplication')" :disabled="this.result == ''|| this.nums.length == 0">*</button>
+            <button v-on:click="addOperation('division')" :disabled="this.result == ''|| this.nums.length == 0">/</button>
             <button v-on:click="printNumber('7')">7</button>
             <button v-on:click="printNumber('8')">8</button>
             <button v-on:click="printNumber('9')">9</button>
@@ -24,7 +24,7 @@
             <button v-on:click="printNumber('1')">1</button>
             <button v-on:click="printNumber('2')">2</button>
             <button v-on:click="printNumber('3')">3</button>
-            <button v-on:click="calculate()">=</button>
+            <button v-on:click="calculate()" :disabled="this.result == ''|| this.nums.length == 0">=</button>
         </div>
     </div>    
 </template>
@@ -33,81 +33,67 @@
 
 export default {
   name: 'Calc',
-  props:{
-        result: String,
-        numbers: [Array, String],
-        operations: [Array, String]
+  data: function(){
+      return{
+        ph: '0',
+        result: '',
+        nums: [],
+        operations: [],
+      }
   },
   methods: {
       calculate: function(){
-          if(this.operation == "sum"){
-            let r = 0;
-            this.numbers.forEach(e => {
-                var n = parseInt(e);
-                r += n;
-            });
-            this.$emit('result', toString(r));
-          }if(this.operation == "rest"){
-              let l = this.numbers.length - 1;
-              let r = 0;
-              let n1, n2;
-              for(let i = 1 ; i < l; i++){
-                if(i == 1){
-                    n1 = parseInt(this.numbers[i-1]);
-                    n2 = parseInt(this.numbers[i]);
-                
-                    r = n1 - n2;
-                }else{
-                    n2 = parseInt(this.numbers[i]);
-                    r = r - n2; 
-                }
-              }
-            this.$emit('result', toString(r));
+        if(this.result != ''){
+           this.nums.push(this.result);
+           this.result = '';
+        }
+
+        var i = 0;
+        var l = this.operations.length;
+
+        for(let o = 0; o < l; o++){
+            if(this.operations[o] == "sum"){
+                let n1 = parseFloat(this.nums[i]);
+                let n2 = parseFloat(this.nums[i + 1])
+                this.nums[i +1] = n1 + n2;
+                i++;
+            }
+            if(this.operations[o] == "rest"){
+                let n1 = parseFloat(this.nums[i]);
+                let n2 = parseFloat(this.nums[i + 1])
+                this.nums[i +1] = n1 - n2;
+                i++;
+            }
+            if(this.operations[o] == "multiplication"){
+                let n1 = parseFloat(this.nums[i]);
+                let n2 = parseFloat(this.nums[i + 1])
+                this.nums[i +1] * n1 - n2;
+                i++;
+            }
+            if(this.operations[o] == "division"){
+                let n1 = parseFloat(this.nums[i]);
+                let n2 = parseFloat(this.nums[i + 1])
+                this.nums[i +1] / n1 - n2;
+                i++;
+            }
           }
-          if(this.operation == "multiplication"){
-              let r = 1;
-              this.numbers.forEach(e => {
-                var n = parseInt(e);
-                r *= n;
-            });
-            this.$emit('result', toString(r));
-          }
-          if(this.operation == "division"){
-              let l = this.numbers.length - 1;
-              let r = 0;
-              let n1, n2;
-              for(let i = 1 ; i < l; i++){
-                if(i == 1){
-                    n1 = parseInt(this.numbers[i-1]);
-                    n2 = parseInt(this.numbers[i]);
-                
-                    r = n1 / n2;
-                }else{
-                    n2 = parseInt(this.numbers[i]);
-                    r = r / n2; 
-                }
-              }
-            this.$emit('result', toString(r));
-          }
-          else{
-            this.$emit('result', '0');
-          }
-      },
+            let temp = this.nums[this.nums.length - 1];
+            this.ph = temp;
+            this.nums = new Array();
+            this.operations = new Array();
+        },
       addOperation: function(op){
-        this.$emit('operation', op);
-        let nums = this.numbers;
-        nums.push(this.result);
-        this.$emit('nums', nums);
-        this.$emit('result', '0');
+        this.nums.push(parseFloat(this.result));
+        this.operations.push(op);        
+        this.result = '';
       },
       clear: function(){
-          this.$emit('result','0');
+          this.result = '';
       },
       printNumber: function(number){
-          let Result = this.result;
-          Result += number;
-          this.$emit('result', Result);
-      },
+        this.ph = '0';
+        this.result += number;
+      }
   }
 }
 </script>
